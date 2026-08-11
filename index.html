@@ -1,17 +1,10 @@
-from weasyprint import HTML
-
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>חרדת בחינות – תרגיל פשוט ישנה לך את התמונה</title>
     <style>
-        @page {
-            size: A4;
-            margin: 0;
-            background-color: #f8fafc;
-        }
-
         * {
             box-sizing: border-box;
         }
@@ -30,43 +23,38 @@ html_content = """<!DOCTYPE html>
         .hero {
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
             color: #ffffff;
-            padding: 40px 35px 35px 35px;
+            padding: 40px 20px;
             text-align: center;
             border-bottom: 4px solid #3b82f6;
         }
 
         .hero h1 {
-            font-size: 24pt;
+            font-size: 2rem;
             margin: 0 0 12px 0;
             font-weight: 800;
             color: #ffffff;
-            letter-spacing: -0.5px;
         }
 
         .hero p.subtitle {
-            font-size: 13pt;
-            margin: 0 0 25px 0;
+            font-size: 1.1rem;
+            margin: 0 auto 25px auto;
             color: #93c5fd;
             max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
             font-weight: 400;
         }
 
         .stats-grid {
-            display: table;
-            width: 100%;
-            margin: 20px 0 25px 0;
-        }
-
-        .stat-card-cell {
-            display: table-cell;
-            width: 50%;
-            padding: 0 8px;
-            vertical-align: top;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            max-width: 700px;
+            margin: 20px auto 25px auto;
+            flex-wrap: wrap;
         }
 
         .stat-card {
+            flex: 1;
+            min-width: 250px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 10px;
@@ -75,35 +63,44 @@ html_content = """<!DOCTYPE html>
         }
 
         .stat-number {
-            font-size: 20pt;
+            font-size: 1.8rem;
             font-weight: 800;
             color: #38bdf8;
             margin-bottom: 4px;
         }
 
         .stat-desc {
-            font-size: 10pt;
+            font-size: 0.95rem;
             color: #e2e8f0;
         }
 
         .cta-group {
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn {
             display: inline-block;
-            padding: 10px 22px;
+            padding: 10px 20px;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 11pt;
+            font-size: 1rem;
             text-decoration: none;
-            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
 
         .btn-primary {
             background-color: #2563eb;
             color: #ffffff;
             border: 1px solid #3b82f6;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
         }
 
         .btn-secondary {
@@ -116,17 +113,27 @@ html_content = """<!DOCTYPE html>
             background-color: transparent;
             color: #93c5fd;
             border: 1px solid #3b82f6;
-            font-size: 9.5pt;
         }
 
-        /* Main Container */
+        /* Container */
         .container {
-            padding: 30px 35px;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px 20px;
         }
 
-        /* Section Styling */
+        /* Card */
+        .card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
         .section-title {
-            font-size: 15pt;
+            font-size: 1.3rem;
             color: #0f172a;
             font-weight: 700;
             margin-bottom: 15px;
@@ -134,138 +141,154 @@ html_content = """<!DOCTYPE html>
             padding-right: 10px;
         }
 
-        .card {
-            background: #ffffff;
-            border-radius: 10px;
-            padding: 22px;
-            margin-bottom: 25px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-
         /* Quiz Styles */
         .quiz-intro {
-            font-size: 10.5pt;
+            font-size: 1rem;
             color: #475569;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .quiz-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .quiz-table th {
-            background-color: #f1f5f9;
-            color: #334155;
-            padding: 8px 10px;
-            font-size: 9pt;
-            text-align: right;
-            border-bottom: 2px solid #cbd5e1;
-        }
-
-        .quiz-table td {
-            padding: 8px 10px;
+        .quiz-item {
             border-bottom: 1px solid #e2e8f0;
-            font-size: 9.5pt;
+            padding: 15px 0;
+        }
+
+        .quiz-item:last-child {
+            border-bottom: none;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .scale-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 450px;
+            background: #f8fafc;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .scale-label {
+            font-size: 0.8rem;
+            color: #64748b;
         }
 
         .scale-options {
+            display: flex;
+            gap: 12px;
+        }
+
+        .scale-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #334155;
+        }
+
+        .scale-option input {
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        .quiz-actions {
+            margin-top: 20px;
             text-align: center;
-            font-weight: 600;
-            color: #64748b;
-            font-size: 8.5pt;
-            white-space: nowrap;
         }
 
         .quiz-result-box {
-            margin-top: 15px;
+            margin-top: 20px;
             background-color: #eff6ff;
             border-right: 4px solid #2563eb;
-            padding: 12px 15px;
-            border-radius: 4px;
-            font-size: 10pt;
+            padding: 15px 20px;
+            border-radius: 6px;
+            font-size: 1.05rem;
             color: #1e40af;
+            display: none; /* hidden until calculated */
         }
 
-        /* Method & Exercise Styles */
-        .two-col-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .two-col-table td {
-            vertical-align: top;
-            padding: 0 10px;
+        /* Method & Grid Styles */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
         }
 
         .info-box {
-            background: #fff;
+            background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             padding: 15px;
-            margin-bottom: 15px;
         }
 
         .info-box h3 {
             margin-top: 0;
-            font-size: 12pt;
+            font-size: 1.1rem;
             color: #1e3a8a;
         }
 
         .bullet-list {
-            padding-right: 18px;
+            padding-right: 20px;
             margin: 8px 0;
-            font-size: 10pt;
+            font-size: 0.95rem;
             color: #334155;
         }
 
         .bullet-list li {
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
+        /* Exercise Card */
         .exercise-card {
             background: #faf5ff;
             border: 1px solid #e9d5ff;
             border-radius: 10px;
-            padding: 20px;
+            padding: 25px;
             margin-bottom: 25px;
         }
 
-        .exercise-card h3 {
-            color: #6b21a8;
-            margin-top: 0;
-            font-size: 13pt;
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
         }
 
-        .visual-placeholder {
-            background-color: #ffffff;
-            border: 2px dashed #c084fc;
+        .image-container img {
+            max-width: 100%;
+            height: auto;
             border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            color: #7e22ce;
-            font-weight: 600;
-            font-size: 10pt;
-            margin: 15px 0;
+            border: 1px solid #c084fc;
+        }
+
+        .steps-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0 0 0;
+        }
+
+        .steps-list li {
+            background: #ffffff;
+            border: 1px solid #e9d5ff;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: #4c1d95;
         }
 
         /* About Section */
-        .about-grid {
-            display: table;
-            width: 100%;
-        }
-
-        .about-cell {
-            display: table-cell;
-            vertical-align: middle;
-        }
-
         .about-bullets {
-            padding-right: 18px;
-            margin: 0;
-            font-size: 10pt;
+            padding-right: 20px;
+            margin: 10px 0 0 0;
+            font-size: 0.95rem;
             color: #334155;
         }
 
@@ -278,20 +301,19 @@ html_content = """<!DOCTYPE html>
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             color: #ffffff;
             text-align: center;
-            padding: 25px 20px;
+            padding: 35px 20px;
             border-top: 3px solid #2563eb;
-            margin-top: 10px;
         }
 
         .footer-cta h2 {
             margin: 0 0 10px 0;
-            font-size: 15pt;
+            font-size: 1.4rem;
         }
 
         .footer-cta p {
             color: #94a3b8;
-            font-size: 10pt;
-            margin: 0 0 18px 0;
+            font-size: 1rem;
+            margin: 0 0 20px 0;
         }
     </style>
 </head>
@@ -303,151 +325,184 @@ html_content = """<!DOCTYPE html>
         <p class="subtitle">באמצעות תרגול קוגניטיבי עצמי פשוט, ניתן להפחית במידה ניכרת את חרדת הבחינות, להשיב את השליטה ולהגיע לבחינה במיטבך.</p>
         
         <div class="stats-grid">
-            <div class="stat-card-cell">
-                <div class="stat-card">
-                    <div class="stat-number">כשליש</div>
-                    <div class="stat-desc">מכלל הלומדים סובלים מחרדת בחינות בתהליך הלמידה ובמהלכו</div>
-                </div>
+            <div class="stat-card">
+                <div class="stat-number">כשליש</div>
+                <div class="stat-desc">מכלל הלומדים סובלים מחרדת בחינות בתהליך הלמידה ובמהלכו</div>
             </div>
-            <div class="stat-card-cell">
-                <div class="stat-card">
-                    <div class="stat-number">15%</div>
-                    <div class="stat-desc">חווים תופעה חמורה ומשתקת המשפיעה ישירות על ההישגים</div>
-                </div>
+            <div class="stat-card">
+                <div class="stat-number">15%</div>
+                <div class="stat-desc">חווים תופעה חמורה ומשתקת המשפיעה ישירות על ההישגים</div>
             </div>
         </div>
 
         <div class="cta-group">
-            <span class="btn btn-primary">מעבר לתרגול המיידי</span>
-            <span class="btn btn-secondary">שאלון אבחון עצמי</span>
-            <span class="btn btn-outline">מקורות מדעיים</span>
+            <a href="#exercise-section" class="btn btn-primary">מעבר לתרגול המיידי</a>
+            <a href="#quiz-section" class="btn btn-secondary">שאלון אבחון עצמי</a>
+            <a href="#about-section" class="btn btn-outline">אודות ומקורות</a>
         </div>
     </div>
 
     <div class="container">
 
-        <!-- Quiz Section -->
-        <div class="card">
+        <!-- Interactive Quiz Section -->
+        <div class="card" id="quiz-section">
             <div class="section-title">שאלון אבחון עצמי: האם התרגול מתאים לך?</div>
             <div class="quiz-intro">
-                אם ידוע לך כי הנך סובל/ת מחרדת בחינות, באפשרותך לעבור ישירות לתרגול. במידה ואינך בטוח/ה, מומלץ להקדיש דקה ולענות על 5 השאלות הבאות:
+                אם ידוע לך כי הנך סובל/ת מחרדת בחינות, באפשרותך לעבור ישירות לתרגול. במידה ואינך בטוח/ה, מומלץ לענות על 5 השאלות הבאות:
             </div>
             
-            <table class="quiz-table">
-                <thead>
-                    <tr>
-                        <th style="width: 60%;">היגוי</th>
-                        <th style="width: 40%; text-align: center;">דירוג (1 = בכלל לא, 6 = מאוד)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1. אני מתרגש מאוד לפני מבחן, גם אם אני מוכן היטב.</td>
-                        <td class="scale-options">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5 &nbsp; 6</td>
-                    </tr>
-                    <tr>
-                        <td>2. לפני בחינה אני חושב שאין טעם לגשת, ממילא אינני מצליח.</td>
-                        <td class="scale-options">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5 &nbsp; 6</td>
-                    </tr>
-                    <tr>
-                        <td>3. בזמן מבחן קשה לי לארגן בצורה מסודרת את מה שיש לי בראש.</td>
-                        <td class="scale-options">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5 &nbsp; 6</td>
-                    </tr>
-                    <tr>
-                        <td>4. אני פוחד שאם אכשל במבחן, חברי יחשבו שאני טיפש.</td>
-                        <td class="scale-options">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5 &nbsp; 6</td>
-                    </tr>
-                    <tr>
-                        <td>5. אני פוחד שאם אכשל במבחן המורים שלי יזלזלו בי.</td>
-                        <td class="scale-options">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5 &nbsp; 6</td>
-                    </tr>
-                </tbody>
-            </table>
+            <form id="anxiety-quiz">
+                <!-- Question 1 -->
+                <div class="quiz-item">
+                    <div class="question-text">1. אני מתרגש מאוד לפני מבחן, גם אם אני מוכן היטב.</div>
+                    <div class="scale-container">
+                        <span class="scale-label">בכלל לא</span>
+                        <div class="scale-options">
+                            <label class="scale-option">1<input type="radio" name="q1" value="1" required></label>
+                            <label class="scale-option">2<input type="radio" name="q1" value="2"></label>
+                            <label class="scale-option">3<input type="radio" name="q1" value="3"></label>
+                            <label class="scale-option">4<input type="radio" name="q1" value="4"></label>
+                            <label class="scale-option">5<input type="radio" name="q1" value="5"></label>
+                            <label class="scale-option">6<input type="radio" name="q1" value="6"></label>
+                        </div>
+                        <span class="scale-label">מאוד</span>
+                    </div>
+                </div>
 
-            <div class="quiz-result-box">
-                <strong>תוצאת המדד האישי:</strong> במידה וסכום התשובות גבוה מ-20, מומלץ עבורך להתנסות בתרגול המוצע.
-            </div>
+                <!-- Question 2 -->
+                <div class="quiz-item">
+                    <div class="question-text">2. לפני בחינה אני חושב שאין טעם לגשת, ממילא אינני מצליח.</div>
+                    <div class="scale-container">
+                        <span class="scale-label">בכלל לא</span>
+                        <div class="scale-options">
+                            <label class="scale-option">1<input type="radio" name="q2" value="1" required></label>
+                            <label class="scale-option">2<input type="radio" name="q2" value="2"></label>
+                            <label class="scale-option">3<input type="radio" name="q2" value="3"></label>
+                            <label class="scale-option">4<input type="radio" name="q2" value="4"></label>
+                            <label class="scale-option">5<input type="radio" name="q2" value="5"></label>
+                            <label class="scale-option">6<input type="radio" name="q2" value="6"></label>
+                        </div>
+                        <span class="scale-label">מאוד</span>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-item">
+                    <div class="question-text">3. בזמן מבחן קשה לי לארגן בצורה מסודרת את מה שיש לי בראש.</div>
+                    <div class="scale-container">
+                        <span class="scale-label">בכלל לא</span>
+                        <div class="scale-options">
+                            <label class="scale-option">1<input type="radio" name="q3" value="1" required></label>
+                            <label class="scale-option">2<input type="radio" name="q3" value="2"></label>
+                            <label class="scale-option">3<input type="radio" name="q3" value="3"></label>
+                            <label class="scale-option">4<input type="radio" name="q3" value="4"></label>
+                            <label class="scale-option">5<input type="radio" name="q3" value="5"></label>
+                            <label class="scale-option">6<input type="radio" name="q3" value="6"></label>
+                        </div>
+                        <span class="scale-label">מאוד</span>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="quiz-item">
+                    <div class="question-text">4. אני פוחד שאם אכשל במבחן, חברי יחשבו שאני טיפש.</div>
+                    <div class="scale-container">
+                        <span class="scale-label">בכלל לא</span>
+                        <div class="scale-options">
+                            <label class="scale-option">1<input type="radio" name="q4" value="1" required></label>
+                            <label class="scale-option">2<input type="radio" name="q4" value="2"></label>
+                            <label class="scale-option">3<input type="radio" name="q4" value="3"></label>
+                            <label class="scale-option">4<input type="radio" name="q4" value="4"></label>
+                            <label class="scale-option">5<input type="radio" name="q4" value="5"></label>
+                            <label class="scale-option">6<input type="radio" name="q4" value="6"></label>
+                        </div>
+                        <span class="scale-label">מאוד</span>
+                    </div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="quiz-item">
+                    <div class="question-text">5. אני פוחד שאם אכשל במבחן המורים שלי יזלזלו בי.</div>
+                    <div class="scale-container">
+                        <span class="scale-label">בכלל לא</span>
+                        <div class="scale-options">
+                            <label class="scale-option">1<input type="radio" name="q5" value="1" required></label>
+                            <label class="scale-option">2<input type="radio" name="q5" value="2"></label>
+                            <label class="scale-option">3<input type="radio" name="q5" value="3"></label>
+                            <label class="scale-option">4<input type="radio" name="q5" value="4"></label>
+                            <label class="scale-option">5<input type="radio" name="q5" value="5"></label>
+                            <label class="scale-option">6<input type="radio" name="q5" value="6"></label>
+                        </div>
+                        <span class="scale-label">מאוד</span>
+                    </div>
+                </div>
+
+                <div class="quiz-actions">
+                    <button type="button" class="btn btn-primary" onclick="calculateScore()">חשב תוצאה</button>
+                </div>
+            </form>
+
+            <div id="quiz-result" class="quiz-result-box"></div>
         </div>
 
         <!-- Science & Method -->
         <div class="card">
             <div class="section-title">שיטת ה"סוויץ'" – איך זה עובד?</div>
-            <p style="font-size: 10pt; color: #334155; margin-top: 0;">
-                שיטת ה"סוויץ'" היא כלי יישומי לאימון השליטה במערכת הקשב ומתמקדת ביכולת להחליף את זווית הראייה. בבסיס השיטה עומד השילוב בין תרגילי נשימה לשליטה קוגניטיבית.
+            <p style="font-size: 0.95rem; color: #334155; margin-top: 0;">
+                שיטת ה"סוויץ'" היא כלי יישומי לאימון השליטה במערכת הקשב ומתמקדת ביכולת להחליף את זווית הראייה. בבסיס השיטה עומד השילוב בין תרגילי נשימה לשליטה קוגניטיבית במטרה להפחית חרדה.
             </p>
 
-            <table class="two-col-table">
-                <tr>
-                    <td style="width: 50%; padding-right: 0; padding-left: 10px;">
-                        <div class="info-box">
-                            <h3>מה קורה בזמן החרדה?</h3>
-                            <ul class="bullet-list">
-                                <li><strong>מנגנון הישרדותי:</strong> החרדה מפעילה מנגנון מגזע המוח המאיץ דופק ונשימה.</li>
-                                <li><strong>ערפול מחשבתי:</strong> הקשב מתקבע על איומים ותרחישי קיצון.</li>
-                                <li><strong>שיתוק בלמידה:</strong> המערכת שנועדה להגן בחירום פוגעת בריכוז ומשתקת במבחן.</li>
-                            </ul>
-                        </div>
-                    </td>
-                    <td style="width: 50%; padding-left: 0; padding-right: 10px;">
-                        <div class="info-box">
-                            <h3>הפתרון: שחרור הקיבעון</h3>
-                            <ul class="bullet-list">
-                                <li><strong>שינוי זווית מבט:</strong> התרגול מאמן את המוח להשתחרר מהקיבעון המחשבתי.</li>
-                                <li><strong>החזרת השליטה:</strong> אימון עקבי משיב את תחושת המסוגלות העצמית.</li>
-                                <li><strong>שתי דקות בלבד:</strong> נדרשות רק 2 דקות בבוקר ו-2 דקות לפני השינה.</li>
-                            </ul>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Practical Exercise -->
-        <div class="exercise-card">
-            <div class="section-title" style="border-color: #9333ea; color: #581c87;">תרגיל מעשי: אשליה אופטית של סליל</div>
-            <p style="font-size: 10pt; color: #4c1d95; margin-top: 0;">
-                תרגיל המאפשר אימון במעבר מכוון בין נקודות מבט (פתח ימני ב' לעומת פתח שמאלי א').
-            </p>
-
-            <div style="text-align: center; margin: 15px 0;">
-    <img src="spiral-illusion.jpg" alt="איור אשליה אופטית של סליל" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #c084fc;">
-</div>
-
-            <table class="quiz-table" style="background: transparent;">
-                <tbody>
-                    <tr>
-                        <td style="font-weight: bold; width: 30%; color: #6b21a8;">1. התבוננות:</td>
-                        <td>הבט על הסליל ומקד את מבטך.</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold; color: #6b21a8;">2. ויסות נשימה:</td>
-                        <td>בצע נשימות עמוקות, מרגיעות, מלאות וקצובות. הנשימה משדרת למוח מסר שהסכנה אינה מוחשית.</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold; color: #6b21a8;">3. סנכרון קוגניטיבי:</td>
-                        <td>שאף אוויר בעת התמקדות בצד אחד, ונשוף בעת המעבר המכוון לצד השני.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- About Author -->
-        <div class="card" style="margin-bottom: 0;">
-            <div class="section-title">נעים מאוד, עופר אשכנזי</div>
-            <div class="about-grid">
-                <div class="about-cell">
-                    <p style="font-size: 10pt; color: #334155; margin-top: 0;">
-                        הגישה המוצעת פה פותחה על בסיס הניסיון והמומחיות הרב-תחומית שצברתי לאורך השנים:
-                    </p>
-                    <ul class="about-bullets">
-                        <li>בעל תואר שני בייעוץ חינוכי והוראה</li>
-                        <li>עורך דין בתחום האזרחי</li>
-                        <li>בסדיר – מפקד ספינה בחיל הים | רס״ן (מיל.) – קצין מיון בבית הספר לחובלים</li>
-                        <li>מדריך בקורסי הכנה לפסיכומטרי</li>
-                        <li>מתמודד עם פוסט טראומה</li>
+            <div class="info-grid">
+                <div class="info-box">
+                    <h3>מה קורה בזמן החרדה?</h3>
+                    <ul class="bullet-list">
+                        <li><strong>מנגנון הישרדותי:</strong> החרדה מפעילה מנגנון מגזע המוח המאיץ דופק ונשימה.</li>
+                        <li><strong>ערפול מחשבתי:</strong> הקשב מתקבע על איומים ותרחישי קיצון.</li>
+                        <li><strong>שיתוק בלמידה:</strong> המערכת שנועדה להגן בחירום פוגעת בריכוז ומשתקת במבחן.</li>
+                    </ul>
+                </div>
+                <div class="info-box">
+                    <h3>הפתרון: שחרור הקיבעון</h3>
+                    <ul class="bullet-list">
+                        <li><strong>שינוי זווית מבט:</strong> התרגול מאמן את המוח להשתחרר מהקיבעון המחשבתי.</li>
+                        <li><strong>החזרת השליטה:</strong> אימון עקבי משיב את תחושת המסוגלות העצמית.</li>
+                        <li><strong>שתי דקות בלבד:</strong> נדרשות רק 2 דקות בבוקר ו-2 דקות לפני השינה.</li>
                     </ul>
                 </div>
             </div>
+        </div>
+
+        <!-- Practical Exercise -->
+        <div class="exercise-card" id="exercise-section">
+            <div class="section-title" style="border-color: #9333ea; color: #581c87;">תרגיל מעשי: אשליה אופטית של סליל</div>
+            <p style="font-size: 0.95rem; color: #4c1d95; margin-top: 0;">
+                תרגיל ראשון להפחתת חרדה ולשליטה בקשב. התרגיל מבוסס על אשליה אופטית של סליל, המאפשרת מעבר בין פתח ימני (ב') לפתח שמאלי (א').
+            </p>
+
+            <div class="image-container">
+                <img src="spiral-illusion.png" alt="איור אשליה אופטית של סליל - מעבר בין פתח א' לפתח ב'">
+            </div>
+
+            <ul class="steps-list">
+                <li><strong>1. התבוננות:</strong> הבט/י על הסליל ומקד/י את המבט.</li>
+                <li><strong>2. ויסות נשימה:</strong> בצע/י נשימות עמוקות, מרגיעות, מלאות וקצובות. נשימות אלה משדרות למוח מסר שהסכנה אינה מוחשית.</li>
+                <li><strong>3. סנכרון:</strong> סנכרן/י בין הנשימה למעבר בין נקודות המבט באשליה האופטית – שאף/י אוויר בעת התמקדות בצד אחד, ונשוף/י בעת המעבר המכוון לצד השני.</li>
+            </ul>
+        </div>
+
+        <!-- About Author -->
+        <div class="card" id="about-section">
+            <div class="section-title">נעים מאוד, עופר אשכנזי</div>
+            <p style="font-size: 0.95rem; color: #334155; margin-top: 0;">
+                הגישה המוצעת פה פותחה על בסיס הניסיון והמומחיות הרב-תחומית שצברתי לאורך השנים:
+            </p>
+            <ul class="about-bullets">
+                <li>בעל תואר שני בייעוץ חינוכי והוראה</li>
+                <li>עורך דין בתחום האזרחי</li>
+                <li>בסדיר – מפקד ספינה בחיל הים | רס״ן (מיל.) – קצין מיון בבית הספר לחובלים</li>
+                <li>מדריך בקורסי הכנה לפסיכומטרי</li>
+                <li>מתמודד עם פוסט טראומה</li>
+            </ul>
         </div>
 
     </div>
@@ -456,15 +511,49 @@ html_content = """<!DOCTYPE html>
     <div class="footer-cta">
         <h2>מוכן להחזיר לעצמך את השליטה במבחן הבא?</h2>
         <p>תרגול קצר של 2 דקות ביום יכול לעשות את כל ההבדל.</p>
-        <span class="btn btn-primary">התחל תרגול עכשיו</span>
-        <span class="btn btn-secondary" style="margin-right: 10px;">קרא עוד על עופר אשכנזי</span>
+        <a href="#exercise-section" class="btn btn-primary">התחל תרגול עכשיו</a>
     </div>
 
+    <!-- JavaScript Calculation Script -->
+    <script>
+        function calculateScore() {
+            let totalScore = 0;
+            let allAnswered = true;
+
+            for (let i = 1; i <= 5; i++) {
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedOption) {
+                    totalScore += parseInt(selectedOption.value, 10);
+                } else {
+                    allAnswered = false;
+                }
+            }
+
+            const resultDiv = document.getElementById('quiz-result');
+
+            if (!allAnswered) {
+                resultDiv.style.display = 'block';
+                resultDiv.style.backgroundColor = '#fef2f2';
+                resultDiv.style.borderRightColor = '#ef4444';
+                resultDiv.style.color = '#991b1b';
+                resultDiv.innerHTML = '<strong>שימו לב:</strong> נא לענות על כל 5 השאלות כדי לקבל תוצאה.';
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = '#eff6ff';
+            resultDiv.style.borderRightColor = '#2563eb';
+            resultDiv.style.color = '#1e40af';
+
+            if (totalScore > 20) {
+                resultDiv.innerHTML = `<strong>הציון שלך: ${totalScore} מתוך 30</strong><br>הציון שהתקבל גבוה מ-20. מומלץ עבורך להתנסות בתרגול המוצע בהמשך העמוד.`;
+            } else {
+                resultDiv.innerHTML = `<strong>הציון שלך: ${totalScore} מתוך 30</strong><br>רמת החרדה לפי השאלון נמוכה יחסית. עם זאת, התרגול המוצע הוא כלי מצוין לשיפור השליטה בקשב ובריכוז לכל אחד.`;
+            }
+
+            // Scroll smoothly to results
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
 </body>
 </html>
-"""
-
-with open('landing_page.html', 'w', encoding='utf-8') as f:
-    f.write(html_content)
-
-HTML('landing_page.html').write_pdf('landing_page.pdf')
